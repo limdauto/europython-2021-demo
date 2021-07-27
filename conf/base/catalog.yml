@@ -1,0 +1,91 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://kedro.readthedocs.io/en/stable/05_data/01_data_catalog.html
+
+raw_ratings:
+  filepath: http://files.grouplens.org/datasets/movielens/ml-100k/u.data
+  type: pandas.CSVDataSet
+  load_args:
+    sep: "\t"
+    names:
+      - UserId
+      - MovieId
+      - Rating
+      - Timestamp
+  layer: raw
+
+raw_movies:
+  type: pandas.CSVDataSet
+  filepath: http://files.grouplens.org/datasets/movielens/ml-100k/u.item
+  load_args:
+    sep: "|"
+    encoding: "windows-1251"
+    names:
+      - MovieId
+      - MovieTitle
+      - ReleaseDate
+      - VideoReleaseDate
+      - IMDBUrl
+      - Unknown
+      - Action
+      - Adventure
+      - Animation
+      - Children
+      - Comedy
+      - Crime
+      - Documentary
+      - Drama
+      - Fantasy
+      - Film-Noir
+      - Horror
+      - Musical
+      - Mystery
+      - Romance
+      - SciFi
+      - Thriller
+      - War
+      - Western
+  layer: raw
+
+cleaned_ratings:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/cleaned_ratings.csv
+  layer: intermediate
+
+cleaned_movies:
+  type: pandas.CSVDataSet
+  filepath: data/02_intermediate/cleaned_movies.csv
+  layer: intermediate
+
+rated_movies:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/rated_movies.csv
+  layer: model_input
+
+train_set:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/train_set.csv
+  layer: model_input
+
+test_set:
+  type: pandas.CSVDataSet
+  filepath: data/05_model_input/test_set.csv
+  layer: model_input
+
+model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/sar_model.pkl
+  layer: models
+
+recommended_movies:
+  type: pandas.CSVDataSet
+  filepath: data/07_model_output/recommended_movies.csv
+  layer: model_output
+  versioned: true
+
+model_metrics:
+  type: pandas.CSVDataSet
+  filepath: data/07_model_output/model_metrics.csv
+  layer: model_output
+  versioned: true

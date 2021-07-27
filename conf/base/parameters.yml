@@ -1,0 +1,25 @@
+col_user: UserId
+col_item: MovieId
+col_rating: Rating
+col_timestamp: Timestamp
+col_prediction: Prediction
+
+sar:
+  split:
+    ratio: 0.75
+    min_rating: 1
+    filter_by: user
+    seed: 42
+  
+  hyper_parameters:
+    similarity_type: jaccard
+    time_decay_coefficient: 30
+    time_now: null
+    timedecay_formula: true
+  
+  evaluation:
+    relevancy_method: top_k
+    k: 10
+    threshold_items_per_user: 10
+
+
