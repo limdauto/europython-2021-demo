@@ -27,18 +27,59 @@
 # limitations under the License.
 
 """Project hooks."""
+from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
 from kedro.config import ConfigLoader
 from kedro.framework.hooks import hook_impl
 from kedro.io import DataCatalog
 from kedro.versioning import Journal
+from great_expectations.data_context import DataContext
+from great_expectations.exceptions import DataContextError
+
+
+class DataValidationHooks:
+    def __init__(self):
+        self._ge_data_context: DataContext = DataContext(
+            context_root_dir=str(Path(__file__).parents[2] / "great_expectations")
+        )
+
+    @hook_impl
+    def before_dataset_saved(self, dataset_name: str, data: Any) -> None:
+        try:
+            self._ge_data_context.get_expectation_suite(dataset_name)
+        except DataContextError:
+            return
+
+        result = self._ge_data_context.run_checkpoint(
+            dataset_name,
+            validations=[
+                {
+                    "batch_request": {
+                        "datasource_name": "kedro",
+                        "data_connector_name": "default_runtime_data_connector_name",
+                        "data_asset_name": dataset_name,
+                        "runtime_parameters": {"batch_data": data},
+                        "batch_identifiers": {"default_identifier_name": dataset_name},
+                    },
+                    "expectation_suite_name": dataset_name,
+                }
+            ],
+        )
+
+        if not result["success"]:
+            raise ValueError(
+                f"Data Validation failed for {dataset_name}. Please check data docs for more information."
+            )
 
 
 class ProjectHooks:
     @hook_impl
     def register_config_loader(
-        self, conf_paths: Iterable[str], env: str, extra_params: Dict[str, Any],
+        self,
+        conf_paths: Iterable[str],
+        env: str,
+        extra_params: Dict[str, Any],
     ) -> ConfigLoader:
         return ConfigLoader(conf_paths)
 

@@ -27,18 +27,13 @@
 # limitations under the License.
 
 """Project settings."""
-from europython_2021_demo.hooks import ProjectHooks
-
-DEFAULT_USER_COL = "userID"
-DEFAULT_ITEM_COL = "itemID"
-DEFAULT_RATING_COL = "rating"
-DEFAULT_LABEL_COL = "label"
-DEFAULT_TIMESTAMP_COL = "timestamp"
-DEFAULT_PREDICTION_COL = "prediction"
-
+from europython_2021_demo.hooks import ProjectHooks, DataValidationHooks
 
 # Instantiate and list your project hooks here
-HOOKS = (ProjectHooks(),)
+HOOKS = (
+    ProjectHooks(),
+    DataValidationHooks(),
+)
 
 # List the installed plugins for which to disable auto-registry
 # DISABLE_HOOKS_FOR_PLUGINS = ("kedro-viz",)

@@ -14,16 +14,26 @@ config_version: 3.0
 # You can use the CLI command `great_expectations datasource new` to help you
 # add a new datasource. Read more at https://docs.greatexpectations.io/en/latest/reference/core_concepts/datasource.html
 datasources:
-  local:
-    data_asset_type:
-      module_name: great_expectations.dataset
-      class_name: PandasDataset
-    batch_kwargs_generators:
-      subdir_reader:
-        class_name: SubdirReaderBatchKwargsGenerator
-        base_directory: ../data/02_intermediate
+  kedro:
+    class_name: Datasource
+    execution_engine:
+      class_name: PandasExecutionEngine
+      module_name: great_expectations.execution_engine
     module_name: great_expectations.datasource
-    class_name: PandasDatasource
+    data_connectors:
+      default_inferred_data_connector_name:
+        base_directory: ../data/02_intermediate
+        default_regex:
+          group_names:
+            - data_asset_name
+          pattern: (.*)\.csv
+        class_name: InferredAssetFilesystemDataConnector
+        module_name: great_expectations.datasource.data_connector
+      default_runtime_data_connector_name:
+        batch_identifiers:
+          - default_identifier_name
+        class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
 
 # This config file supports variable substitution which enables: 1) keeping
 # secrets out of source control & 2) environment-based configuration changes
@@ -102,6 +112,6 @@ data_docs_sites:
       class_name: DefaultSiteIndexBuilder
 
 anonymous_usage_statistics:
+  data_context_id: fcabe7d7-3fc3-43bc-b6a6-e48e454c8af0
   enabled: true
-  data_context_id: 834f1596-f19e-4ec0-bdd4-5bc660b546e4
 notebooks:

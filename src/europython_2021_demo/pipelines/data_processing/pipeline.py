@@ -10,11 +10,13 @@ def create_pipeline() -> Pipeline:
                 inputs="raw_ratings",
                 outputs="cleaned_ratings",
                 tags="data_cleaning",
+                name="clean_rating",
             ),
             node(
                 clean_movies,
                 inputs="raw_movies",
                 outputs="cleaned_movies",
+                name="clean_movies",
                 tags="data_cleaning",
             ),
             node(
