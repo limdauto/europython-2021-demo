@@ -27,6 +27,7 @@
 # limitations under the License.
 
 """Project hooks."""
+import logging
 from pathlib import Path
 from typing import Any, Dict, Iterable, Optional
 
@@ -38,14 +39,19 @@ from great_expectations.data_context import DataContext
 from great_expectations.exceptions import DataContextError
 
 
+logger = logging.getLogger(__name__)
+
+
 class DataValidationHooks:
     def __init__(self):
+        project_root = Path.cwd()
+        ge_context_root_dir = project_root / "conf" / "base" / "great_expectations"
         self._ge_data_context: DataContext = DataContext(
-            context_root_dir=str(Path(__file__).parents[2] / "great_expectations")
+            context_root_dir=str(ge_context_root_dir)
         )
 
     @hook_impl
-    def before_dataset_saved(self, dataset_name: str, data: Any) -> None:
+    def before_dataset_saved(self, dataset_name: str, data: Any):
         try:
             self._ge_data_context.get_expectation_suite(dataset_name)
         except DataContextError:
@@ -68,6 +74,7 @@ class DataValidationHooks:
         )
 
         if not result["success"]:
+            logger.error("Validation result: %s", result)
             raise ValueError(
                 f"Data Validation failed for {dataset_name}. Please check data docs for more information."
             )

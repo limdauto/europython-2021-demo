@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
+from typing import Tuple, List, Dict
 import pandas as pd
 
 from europython_2021_demo.constants import (
@@ -100,7 +101,7 @@ def python_stratified_split(
     seed=42,
     col_user=DEFAULT_USER_COL,
     col_item=DEFAULT_ITEM_COL,
-):
+) -> List[pd.DataFrame]:
     """Pandas stratified splitter.
 
     For each user / item, the split function takes proportions of ratings which is
@@ -171,7 +172,7 @@ def evaluate_model(
     relevancy_method: str,
     k: int,
     threshold: int,
-):
+) -> Tuple[pd.DataFrame, Dict]:
     top_k_recommended = model.recommend_k_items(test_set, remove_seen=True)
     args = [test_set, top_k_recommended]
     kwargs = dict(

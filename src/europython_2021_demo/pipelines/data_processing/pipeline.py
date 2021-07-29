@@ -10,7 +10,7 @@ def create_pipeline() -> Pipeline:
                 inputs="raw_ratings",
                 outputs="cleaned_ratings",
                 tags="data_cleaning",
-                name="clean_rating",
+                name="clean_ratings",
             ),
             node(
                 clean_movies,
@@ -22,6 +22,7 @@ def create_pipeline() -> Pipeline:
             node(
                 create_model_input_table,
                 inputs=["cleaned_ratings", "cleaned_movies"],
+                name="create_model_input_table",
                 outputs="rated_movies",
             ),
         ]

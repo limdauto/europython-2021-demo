@@ -1,7 +1,7 @@
 {
-  "yaml.schemas": {
-    "https://raw.githubusercontent.com/quantumblacklabs/kedro/develop/static/jsonschema/kedro-catalog-0.17.json": "conf/**/*catalog*"
-  },
+  // "yaml.schemas": {
+  //   "https://raw.githubusercontent.com/quantumblacklabs/kedro/develop/static/jsonschema/kedro-catalog-0.17.json": "conf/**/*catalog*"
+  // },
   "python.linting.enabled": true,
   "python.envFile": "${workspaceFolder}/.env",
   "prettier.printWidth": 120

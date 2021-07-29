@@ -27,9 +27,8 @@ def clean_movies(data: pd.DataFrame) -> pd.DataFrame:
         The cleaned moviesDataFrame
     """
     cleaned_movies = data[["MovieId", "MovieTitle"]]
-    cleaned_movies.loc[len(cleaned_movies)] = [None, "This movie doesn't exist"]
-    # return cleaned_movies.dropna()
-    return cleaned_movies
+    # cleaned_movies.loc[len(cleaned_movies)] = [None, "This movie doesn't exist"]
+    return cleaned_movies.dropna()
 
 
 def create_model_input_table(

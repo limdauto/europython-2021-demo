@@ -5,7 +5,7 @@ isort~=5.0
 jupyter~=1.0
 jupyter_client>=5.1, <7.0
 jupyterlab~=3.0
-great-expectation==0.13.23
+great-expectations~=0.13.24
 kedro[pandas.CSVDataset]==0.17.4
 kedro-airflow==0.4.1
 kedro-telemetry~=0.1.0

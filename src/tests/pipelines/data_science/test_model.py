@@ -9,10 +9,8 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from europython_2021_demo.pipelines.sar.nodes import (
-    SARSingleNode,
-    DEFAULT_PREDICTION_COL,
-)
+from europython_2021_demo.constants import DEFAULT_PREDICTION_COL
+from europython_2021_demo.pipelines.data_science.nodes import SARSingleNode
 
 
 def _csv_reader_url(url, delimiter=",", encoding="utf-8"):

@@ -1,2 +1,5 @@
 [FORMAT]
 max-line-length=120
+
+[MESSAGES CONTROL]
+disable=too-many-arguments,missing-class-docstring,too-few-public-methods,missing-function-docstring

@@ -21,5 +21,3 @@ sar:
     relevancy_method: top_k
     k: 10
     threshold_items_per_user: 10
-
-

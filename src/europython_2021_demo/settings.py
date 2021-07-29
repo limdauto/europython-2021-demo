@@ -32,7 +32,7 @@ from europython_2021_demo.hooks import ProjectHooks, DataValidationHooks
 # Instantiate and list your project hooks here
 HOOKS = (
     ProjectHooks(),
-    DataValidationHooks(),
+    # DataValidationHooks(),
 )
 
 # List the installed plugins for which to disable auto-registry
