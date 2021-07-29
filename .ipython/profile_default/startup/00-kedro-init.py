@@ -1,7 +1,11 @@
 import logging.config
+import warnings
 import sys
 from pathlib import Path
 from typing import Any, Dict
+
+warnings.filterwarnings("ignore")
+
 
 from IPython.core.magic import needs_local_scope, register_line_magic
 

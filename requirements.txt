@@ -1,0 +1,2 @@
+# empty requirements file required by astro.
+# real requirements are managed by Kedro under src/.

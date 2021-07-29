@@ -10,7 +10,6 @@ from europython_2021_demo.constants import (
     DEFAULT_ITEM_COL,
     DEFAULT_RATING_COL,
     DEFAULT_TIMESTAMP_COL,
-    DEFAULT_PREDICTION_COL,
 )
 
 from europython_2021_demo.pipelines.data_science.nodes import python_stratified_split

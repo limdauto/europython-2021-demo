@@ -13,6 +13,7 @@ from kedro.framework.project import configure_project
 
 
 class KedroOperator(BaseOperator):
+
     @apply_defaults
     def __init__(
         self,
@@ -21,8 +22,7 @@ class KedroOperator(BaseOperator):
         node_name: str,
         project_path: str,
         env: str,
-        *args,
-        **kwargs
+        *args, **kwargs
     ) -> None:
         super().__init__(*args, **kwargs)
         self.package_name = package_name
@@ -33,11 +33,10 @@ class KedroOperator(BaseOperator):
 
     def execute(self, context):
         configure_project(self.package_name)
-        with KedroSession.create(
-            self.package_name, self.project_path, env=self.env
-        ) as session:
+        with KedroSession.create(self.package_name,
+                                 self.project_path,
+                                 env=self.env) as session:
             session.run(self.pipeline_name, node_names=[self.node_name])
-
 
 # Kedro settings required to run your pipeline
 env = "local"
@@ -47,12 +46,12 @@ package_name = "europython_2021_demo"
 
 # Default settings applied to all tasks
 default_args = {
-    "owner": "airflow",
-    "depends_on_past": False,
-    "email_on_failure": False,
-    "email_on_retry": False,
-    "retries": 1,
-    "retry_delay": timedelta(minutes=5),
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5)
 }
 
 # Using a DAG context manager, you don't have to specify the dag property of each task
@@ -60,26 +59,15 @@ with DAG(
     "europython-2021-demo",
     start_date=datetime(2019, 1, 1),
     max_active_runs=3,
-    schedule_interval=timedelta(
-        minutes=30
-    ),  # https://airflow.apache.org/docs/stable/scheduler.html#dag-runs
+    schedule_interval=timedelta(minutes=30),  # https://airflow.apache.org/docs/stable/scheduler.html#dag-runs
     default_args=default_args,
-    catchup=False,  # enable if you don't want historical dag runs to run
+    catchup=False # enable if you don't want historical dag runs to run
 ) as dag:
 
     tasks = {}
 
-    tasks["clean-movies-raw-movies-cleaned-movies"] = KedroOperator(
-        task_id="clean-movies-raw-movies-cleaned-movies",
-        package_name=package_name,
-        pipeline_name=pipeline_name,
-        node_name="clean_movies",
-        project_path=project_path,
-        env=env,
-    )
-
-    tasks["clean-ratings-raw-ratings-cleaned-ratings"] = KedroOperator(
-        task_id="clean-ratings-raw-ratings-cleaned-ratings",
+    tasks["clean-ratings"] = KedroOperator(
+        task_id="clean-ratings",
         package_name=package_name,
         pipeline_name=pipeline_name,
         node_name="clean_ratings",
@@ -87,10 +75,17 @@ with DAG(
         env=env,
     )
 
-    tasks[
-        "create-model-input-table-cleaned-movies-cleaned-ratings-rated-movies"
-    ] = KedroOperator(
-        task_id="create-model-input-table-cleaned-movies-cleaned-ratings-rated-movies",
+    tasks["clean-movies"] = KedroOperator(
+        task_id="clean-movies",
+        package_name=package_name,
+        pipeline_name=pipeline_name,
+        node_name="clean_movies",
+        project_path=project_path,
+        env=env,
+    )
+
+    tasks["create-model-input-table"] = KedroOperator(
+        task_id="create-model-input-table",
         package_name=package_name,
         pipeline_name=pipeline_name,
         node_name="create_model_input_table",
@@ -125,23 +120,16 @@ with DAG(
         env=env,
     )
 
-    (
-        tasks["clean-movies-raw-movies-cleaned-movies"]
-        >> tasks["create-model-input-table-cleaned-movies-cleaned-ratings-rated-movies"]
-    )
 
-    (
-        tasks["clean-ratings-raw-ratings-cleaned-ratings"]
-        >> tasks["create-model-input-table-cleaned-movies-cleaned-ratings-rated-movies"]
-    )
 
     tasks["split-data"] >> tasks["train-model"]
 
     tasks["split-data"] >> tasks["evaluate-model"]
 
-    tasks["train-model"] >> tasks["evaluate-model"]
+    tasks["clean-ratings"] >> tasks["create-model-input-table"]
 
-    (
-        tasks["create-model-input-table-cleaned-movies-cleaned-ratings-rated-movies"]
-        >> tasks["split-data"]
-    )
+    tasks["clean-movies"] >> tasks["create-model-input-table"]
+
+    tasks["create-model-input-table"] >> tasks["split-data"]
+
+    tasks["train-model"] >> tasks["evaluate-model"]
